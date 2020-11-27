@@ -311,7 +311,7 @@ plot_ly(data = df_general_pais,
                  hovermode = "compare")
 ```
 
-### Tabla de cantidades de casos en cantones
+### Tabla de cantidades de casos en distritos
 ```{r}
 st_drop_geometry(sf_general_distritos_ultima_fecha) %>% 
   select(Provincia = provincia, Canton = canton, Distrito = distrito, Positivos = positivos, Activos = activos, Recuperados = recuperados, Fallecidos = fallecidos) %>%
@@ -342,23 +342,25 @@ valueBox(value = paste(format(df_general_pais_ultima_fecha$positivos, big.mark =
 Row {data-width=400}
 -----------------------------------------------------------------------
 
-### Mapa de casos positivos en cantones
+### Mapa de casos positivos en distritos
 ```{r}
 
 paleta_azul <- colorBin(palette = "Blues", 
-                        domain = sf_positivos_cantones_ultima_fecha$positivos,
+                        domain = sf_general_distritos_ultima_fecha$positivos,
                         bins = 10
                )
 
-leaflet_cantones <- leaflet(sf_positivos_cantones_ultima_fecha) %>% 
+leaflet_cantones <- leaflet(sf_general_distritos_ultima_fecha) %>% 
   fitBounds(lng1 = -86, lng2 = -82, lat1 = 8, lat2 = 11) %>%
   addProviderTiles(providers$OpenStreetMap.Mapnik, group = "OpenStreetMap") %>%
   addPolygons(fillColor = ~paleta_azul(positivos), stroke=T, fillOpacity = 1,
               color="black", weight=0.2, opacity= 0.5,
-              group = "Cantones",
-              popup = paste("Provincia: ", sf_positivos_cantones_ultima_fecha$provincia, "<br>",
-                            "Cantón: ", sf_positivos_cantones_ultima_fecha$canton, "<br>",
-                            "Positivos: ", sf_positivos_cantones_ultima_fecha$positivos
+              group = "Distritos",
+              popup = paste("Provincia: ", sf_general_distritos_ultima_fecha$provincia, "<br>",
+                            "Cantón: ", sf_general_distritos_ultima_fecha$canton, "<br>",
+                            "Distrito: ", sf_general_distritos_ultima_fecha$distrito, "<br>",
+                            "Positivos: ", sf_general_distritos_ultima_fecha$positivos
+                            
                             )
   ) %>%
   addLegend("bottomright", pal = paleta_azul, values = ~positivos,
@@ -367,9 +369,10 @@ leaflet_cantones <- leaflet(sf_positivos_cantones_ultima_fecha) %>%
   ) %>%  
   addLayersControl(
     baseGroups = c("OpenStreetMap"),
-    overlayGroups = c("Cantones"),
+    overlayGroups = c("Distritos"),
     options = layersControlOptions(collapsed = TRUE)    
-  ) %>%  
+  ) %>% 
+  addScaleBar() %>% 
   addMiniMap(
     toggleDisplay = TRUE,
     position = "bottomleft",
@@ -425,23 +428,24 @@ valueBox(value = paste(format(df_general_pais_ultima_fecha$activos, big.mark = "
 Row {data-width=400}
 -----------------------------------------------------------------------
 
-### Mapa de casos activos en cantones
+### Mapa de casos activos en distritos
 ```{r}
 
 paleta_roja <- colorBin(palette = "Reds", 
-                        domain = sf_activos_cantones_ultima_fecha$activos,
+                        domain = sf_general_distritos_ultima_fecha$activos,
                         bins = 10
                )
 
-leaflet_cantones <- leaflet(sf_activos_cantones_ultima_fecha) %>% 
+leaflet_cantones <- leaflet(sf_general_distritos_ultima_fecha) %>% 
   fitBounds(lng1 = -86, lng2 = -82, lat1 = 8, lat2 = 11) %>%
   addProviderTiles(providers$OpenStreetMap.Mapnik, group = "OpenStreetMap") %>%
   addPolygons(fillColor = ~paleta_roja(activos), stroke=T, fillOpacity = 1,
               color="black", weight=0.2, opacity= 0.5,
-              group = "Cantones",
-              popup = paste("Provincia: ", sf_activos_cantones_ultima_fecha$provincia, "<br>",
-                            "Cantón: ", sf_activos_cantones_ultima_fecha$canton, "<br>",
-                            "Activos: ", sf_activos_cantones_ultima_fecha$activos
+              group = "Distritos",
+              popup = paste("Provincia: ", sf_general_distritos_ultima_fecha$provincia, "<br>",
+                            "Cantón: ", sf_general_distritos_ultima_fecha$canton, "<br>",
+                            "Distrito: ", sf_general_distritos_ultima_fecha$distrito, "<br>",
+                            "Activos: ", sf_general_distritos_ultima_fecha$activos
                             )
   ) %>%
   addLegend("bottomright", pal = paleta_roja, values = ~activos,
@@ -450,9 +454,10 @@ leaflet_cantones <- leaflet(sf_activos_cantones_ultima_fecha) %>%
   ) %>%  
   addLayersControl(
     baseGroups = c("OpenStreetMap"),
-    overlayGroups = c("Cantones"),
+    overlayGroups = c("Distritos"),
     options = layersControlOptions(collapsed = TRUE)    
   ) %>%  
+  addScaleBar() %>% 
   addMiniMap(
     toggleDisplay = TRUE,
     position = "bottomleft",
@@ -507,34 +512,36 @@ valueBox(value = paste(format(df_general_pais_ultima_fecha$RECUPERADOS, big.mark
 Row {data-width=400}
 -----------------------------------------------------------------------
 
-### Mapa de casos recuperados en cantones
+### Mapa de casos recuperados en distritos
 ```{r}
 
 paleta_verde <- colorBin(palette = "Greens", 
-                        domain = sf_recuperados_cantones_ultima_fecha$RECUPERADOS,
+                        domain = sf_general_distritos_ultima_fecha$recuperados,
                         bins = 10
                )
 
-leaflet_cantones <- leaflet(sf_recuperados_cantones_ultima_fecha) %>% 
+leaflet_cantones <- leaflet(sf_general_distritos_ultima_fecha) %>% 
   fitBounds(lng1 = -86, lng2 = -82, lat1 = 8, lat2 = 11) %>%
   addProviderTiles(providers$OpenStreetMap.Mapnik, group = "OpenStreetMap") %>%
-  addPolygons(fillColor = ~paleta_verde(RECUPERADOS), stroke=T, fillOpacity = 1,
+  addPolygons(fillColor = ~paleta_verde(recuperados), stroke=T, fillOpacity = 1,
               color="black", weight=0.2, opacity= 0.5,
-              group = "Cantones",
-              popup = paste("Provincia: ", sf_recuperados_cantones_ultima_fecha$provincia, "<br>",
-                            "Cantón: ", sf_recuperados_cantones_ultima_fecha$canton, "<br>",
-                            "Recuperados: ", sf_recuperados_cantones_ultima_fecha$RECUPERADOS
+              group = "Distritos",
+             popup = paste("Provincia: ", sf_general_distritos_ultima_fecha$provincia, "<br>",
+                            "Cantón: ", sf_general_distritos_ultima_fecha$canton, "<br>",
+                            "Distrito: ", sf_general_distritos_ultima_fecha$distrito, "<br>",
+                            "Activos: ", sf_general_distritos_ultima_fecha$recuperados
                             )
   ) %>%
-  addLegend("bottomright", pal = paleta_verde, values = ~RECUPERADOS,
+  addLegend("bottomright", pal = paleta_verde, values = ~recuperados,
     title = "Casos recuperados",
     opacity = 1
   ) %>%  
   addLayersControl(
     baseGroups = c("OpenStreetMap"),
-    overlayGroups = c("Cantones"),
+    overlayGroups = c("Distritos"),
     options = layersControlOptions(collapsed = TRUE)    
   ) %>%  
+  addScaleBar() %>% 
   addMiniMap(
     toggleDisplay = TRUE,
     position = "bottomleft",
@@ -589,23 +596,24 @@ valueBox(value = paste(format(df_general_pais_ultima_fecha$fallecidos, big.mark 
 Row {data-width=400}
 -----------------------------------------------------------------------
 
-### Mapa de casos fallecidos en cantones
+### Mapa de casos fallecidos en distritos
 ```{r}
 
 paleta_violeta <- colorBin(palette = "Purples", 
-                        domain = sf_fallecidos_cantones_ultima_fecha$fallecidos,
+                        domain = sf_general_distritos_ultima_fecha$fallecidos,
                         bins = 10
                )
 
-leaflet_cantones <- leaflet(sf_fallecidos_cantones_ultima_fecha) %>% 
+leaflet_cantones <- leaflet(sf_general_distritos_ultima_fecha) %>% 
   fitBounds(lng1 = -86, lng2 = -82, lat1 = 8, lat2 = 11) %>%
   addProviderTiles(providers$OpenStreetMap.Mapnik, group = "OpenStreetMap") %>%
   addPolygons(fillColor = ~paleta_violeta(fallecidos), stroke=T, fillOpacity = 1,
               color="black", weight=0.2, opacity= 0.5,
               group = "Cantones",
-              popup = paste("Provincia: ", sf_fallecidos_cantones_ultima_fecha$provincia, "<br>",
-                            "Cantón: ", sf_fallecidos_cantones_ultima_fecha$canton, "<br>",
-                            "Fallecidos: ", sf_fallecidos_cantones_ultima_fecha$fallecidos
+              popup = paste("Provincia: ", sf_general_distritos_ultima_fecha$provincia, "<br>",
+                            "Cantón: ", sf_general_distritos_ultima_fecha$canton, "<br>",
+                            "Distrito: ", sf_general_distritos_ultima_fecha$distrito, "<br>",
+                            "Fallecidos: ", sf_general_distritos_ultima_fecha$fallecidos
                             )
   ) %>%
   addLegend("bottomright", pal = paleta_violeta, values = ~fallecidos,
@@ -614,9 +622,10 @@ leaflet_cantones <- leaflet(sf_fallecidos_cantones_ultima_fecha) %>%
   ) %>%  
   addLayersControl(
     baseGroups = c("OpenStreetMap"),
-    overlayGroups = c("Cantones"),
+    overlayGroups = c("Distritos"),
     options = layersControlOptions(collapsed = TRUE)    
   ) %>%  
+  addScaleBar() %>% 
   addMiniMap(
     toggleDisplay = TRUE,
     position = "bottomleft",
