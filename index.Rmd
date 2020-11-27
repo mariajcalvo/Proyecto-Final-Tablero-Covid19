@@ -1,5 +1,5 @@
 ---
-title: "Estado del COVID-19 en Costa Rica (Daniel Ulloa)"
+title: "Estado del COVID-19 en Costa Rica (Daniel Ulloa y María José Cálvo)"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
