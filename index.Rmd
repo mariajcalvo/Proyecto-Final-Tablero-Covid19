@@ -200,7 +200,6 @@ Row {data-height=10}
 -----------------------------------------------------------------------
 ### **Última actualización de datos realizada el `r  df_general_pais_ultima_fecha$FECHA` con base en los [datos publicados por el Ministerio de Salud de Costa Rica](http://geovision.uned.ac.cr/oges/)**.
 
-
 Row
 -----------------------------------------------------------------------
 
@@ -283,33 +282,16 @@ valueBox(value = paste(format(df_general_pais_ultima_fecha$UCI, big.mark = ","),
 Row {data-width=400}
 -----------------------------------------------------------------------
 
-### Gráfico de variación de las cantidades de casos en el tiempo
+### Porcentaje de casos en unidad de cuidados intensivos con respecto a una capacidad máxima de 359 espacios disponibles
 ```{r}
-plot_ly(data = df_general_pais,
-                x = ~ FECHA,
-                y = ~ positivos, 
-                name = 'Positivos', 
-                type = 'scatter',
-                mode = 'lines',
-                line = list(color = color_positivos)) %>%
-  add_trace(y = ~ activos,
-                    name = 'Activos',
-                    mode = 'lines',
-                    line = list(color = color_activos)) %>%
-  add_trace(y = ~ RECUPERADOS,
-                    name = 'Recuperados',
-                    mode = 'lines',
-                    line = list(color = color_recuperados)) %>%
-  add_trace(y = ~ fallecidos,
-                    name = 'Fallecidos',
-                    mode = 'lines',
-                    line = list(color = color_fallecidos)) %>%  
-  layout(title = "",
-                 yaxis = list(title = "Cantidad de casos"),
-                 xaxis = list(title = "Fecha"),
-                 legend = list(x = 0.1, y = 0.9),
-                 hovermode = "compare")
+manometro_UCI <- round(100 * df_general_pais_ultima_fecha$UCI / 359, 1)
+gauge(manometro_UCI, min = 0, max = 100, gaugeSectors(
+  success = c(0, 50), warning = c(51, 80), danger = c(81, 100)
+))
 ```
+
+Row {data-width=400}
+-----------------------------------------------------------------------
 
 ### Tabla de cantidades de casos en distritos
 ```{r}
@@ -383,27 +365,37 @@ leaflet_cantones <- leaflet(sf_general_distritos_ultima_fecha) %>%
 leaflet_cantones
 ```
 
-### Gráfico de cantones con mayor cantidad de casos positivos
+### Gráfico de porcentaje de casos positivos por distrito
 ```{r}
-st_drop_geometry(sf_positivos_cantones_ultima_fecha) %>%
-mutate(canton = factor(canton, levels = canton)) %>%
-top_n(n = 10, wt = positivos) %>%  
-plot_ly(x = ~ canton, 
-        y = ~ positivos, 
-        type = "bar", 
-        text = ~ positivos,
-        textposition = 'auto',
-        marker = list(color = color_positivos)
-) %>%
-layout(yaxis = list(title = "Cantidad de casos positivos"),
-       xaxis = list(title = ""),
-       margin = list(l = 10,
-                     r = 10,
-                     b = 10,
-                     t = 10,
-                     pad = 2
-                )
-) 
+
+library(janitor)
+top10 = df_general_distritos_ultima_fecha%>%
+top_n(n = 10, wt = positivos)
+  
+top10ytotal = df_general_distritos_ultima_fecha%>%
+top_n(n = 10, wt = positivos)%>%
+adorn_totals("row")
+
+Totaltotal = df_general_distritos_ultima_fecha%>%
+adorn_totals("row")
+
+Totaltotal= rbind(Totaltotal,top10ytotal[11,])
+
+df = Totaltotal[488:489,]
+otros = df[1,4:7] - df[2,4:7]
+vec1= c("Otros")
+otros$distrito <- vec1
+otros$canton <- vec1
+otros$provincia<- vec1
+top10masotros=rbind(top10, otros[1,])
+
+fig <- plot_ly(top10masotros, labels = top10masotros$distrito, values = top10masotros$positivos, type = 'pie')
+fig <- fig %>% layout(title = 'Porcentaje de casos positivos por distrito',
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+
+fig
+
 ```
 
 
@@ -468,27 +460,36 @@ leaflet_cantones <- leaflet(sf_general_distritos_ultima_fecha) %>%
 leaflet_cantones
 ```
 
-### Gráfico de cantones con mayor cantidad de casos activos
+### Gráfico de porcentaje de casos activos por distrito
 ```{r}
-st_drop_geometry(sf_activos_cantones_ultima_fecha) %>%
-mutate(canton = factor(canton, levels = canton)) %>%
-top_n(n = 10, wt = activos) %>%  
-plot_ly(x = ~ canton, 
-        y = ~ activos, 
-        type = "bar", 
-        text = ~ activos,
-        textposition = 'auto',
-        marker = list(color = color_activos)
-) %>%
-layout(yaxis = list(title = "Cantidad de casos activos"),
-       xaxis = list(title = ""),
-       margin = list(l = 10,
-                     r = 10,
-                     b = 10,
-                     t = 10,
-                     pad = 2
-                )
-) 
+
+top10 = df_general_distritos_ultima_fecha%>%
+top_n(n = 10, wt = activos)
+  
+top10ytotal = df_general_distritos_ultima_fecha%>%
+top_n(n = 10, wt = activos)%>%
+adorn_totals("row")
+
+Totaltotal = df_general_distritos_ultima_fecha%>%
+adorn_totals("row")
+
+Totaltotal= rbind(Totaltotal,top10ytotal[11,])
+
+df = Totaltotal[488:489,]
+otros = df[1,4:7] - df[2,4:7]
+vec1= c("Otros")
+otros$distrito <- vec1
+otros$canton <- vec1
+otros$provincia<- vec1
+top10masotros=rbind(top10, otros[1,])
+
+fig <- plot_ly(top10masotros, labels = top10masotros$distrito, values = top10masotros$activos, type = 'pie')
+fig <- fig %>% layout(title = 'Porcentaje de casos activos por distrito',
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+
+fig
+
 ```
 
 
@@ -552,27 +553,36 @@ leaflet_cantones <- leaflet(sf_general_distritos_ultima_fecha) %>%
 leaflet_cantones
 ```
 
-### Gráfico de cantones con mayor cantidad de casos recuperados
+### Gráfico de porcentaje de casos recuperados por distrito
 ```{r}
-st_drop_geometry(sf_recuperados_cantones_ultima_fecha) %>%
-mutate(canton = factor(canton, levels = canton)) %>%
-top_n(n = 10, wt = RECUPERADOS) %>%  
-plot_ly(x = ~ canton, 
-        y = ~ RECUPERADOS, 
-        type = "bar", 
-        text = ~ RECUPERADOS,
-        textposition = 'auto',
-        marker = list(color = color_recuperados)
-) %>%
-layout(yaxis = list(title = "Cantidad de casos recuperados"),
-       xaxis = list(title = ""),
-       margin = list(l = 10,
-                     r = 10,
-                     b = 10,
-                     t = 10,
-                     pad = 2
-                )
-) 
+
+top10 = df_general_distritos_ultima_fecha%>%
+top_n(n = 10, wt = recuperados)
+  
+top10ytotal = df_general_distritos_ultima_fecha%>%
+top_n(n = 10, wt = recuperados)%>%
+adorn_totals("row")
+
+Totaltotal = df_general_distritos_ultima_fecha%>%
+adorn_totals("row")
+
+Totaltotal= rbind(Totaltotal,top10ytotal[11,])
+
+df = Totaltotal[488:489,]
+otros = df[1,4:7] - df[2,4:7]
+vec1= c("Otros")
+otros$distrito <- vec1
+otros$canton <- vec1
+otros$provincia<- vec1
+top10masotros=rbind(top10, otros[1,])
+
+fig <- plot_ly(top10masotros, labels = top10masotros$distrito, values = top10masotros$recuperados, type = 'pie')
+fig <- fig %>% layout(title = 'Porcentaje de casos recuperados por distrito',
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+
+fig
+
 ```
 
 
@@ -636,28 +646,38 @@ leaflet_cantones <- leaflet(sf_general_distritos_ultima_fecha) %>%
 leaflet_cantones
 ```
 
-### Gráfico de cantones con mayor cantidad de casos fallecidos
+
+### Gráfico de porcentaje de casos fallecidos por distrito
 ```{r}
-st_drop_geometry(sf_fallecidos_cantones_ultima_fecha) %>%
-mutate(canton = factor(canton, levels = canton)) %>%
-top_n(n = 10, wt = fallecidos) %>%  
-plot_ly(x = ~ canton, 
-        y = ~ fallecidos, 
-        type = "bar", 
-        text = ~ fallecidos,
-        textposition = 'auto',
-        marker = list(color = color_fallecidos)
-) %>%
-layout(yaxis = list(title = "Cantidad de casos fallecidos"),
-       xaxis = list(title = ""),
-       margin = list(l = 10,
-                     r = 10,
-                     b = 10,
-                     t = 10,
-                     pad = 2
-                )
-) 
+
+top10 = df_general_distritos_ultima_fecha%>%
+top_n(n = 10, wt = fallecidos)
+  
+top10ytotal = df_general_distritos_ultima_fecha%>%
+top_n(n = 10, wt = fallecidos)%>%
+adorn_totals("row")
+
+Totaltotal = df_general_distritos_ultima_fecha%>%
+adorn_totals("row")
+
+Totaltotal= rbind(Totaltotal,top10ytotal[11,])
+
+df = Totaltotal[488:489,]
+otros = df[1,4:7] - df[2,4:7]
+vec1= c("Otros")
+otros$distrito <- vec1
+otros$canton <- vec1
+otros$provincia<- vec1
+top10masotros=rbind(top10, otros[1,])
+
+fig <- plot_ly(top10masotros, labels = top10masotros$distrito, values = top10masotros$fallecidos, type = 'pie')
+fig <- fig %>% layout(title = 'Porcentaje de casos fallecidos por distrito',
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+
+fig
 ```
+
 
 Mapa de calor
 =======================================================================
