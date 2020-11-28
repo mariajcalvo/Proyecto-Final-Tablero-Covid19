@@ -279,9 +279,6 @@ valueBox(value = paste(format(df_general_pais_ultima_fecha$UCI, big.mark = ","),
 )
 ```
 
-Row {data-width=400}
------------------------------------------------------------------------
-
 ### Porcentaje de casos en unidad de cuidados intensivos con respecto a una capacidad máxima de 359 espacios disponibles
 ```{r}
 manometro_UCI <- round(100 * df_general_pais_ultima_fecha$UCI / 359, 1)
