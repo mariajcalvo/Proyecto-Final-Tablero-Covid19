@@ -386,7 +386,8 @@ otros$canton <- vec1
 otros$provincia<- vec1
 top10masotros=rbind(top10, otros[1,])
 
-fig <- plot_ly(top10masotros, labels = top10masotros$distrito, values = top10masotros$positivos, type = 'pie')
+fig <- plot_ly(top10masotros, labels = top10masotros$distrito, values = top10masotros$positivos, type = 'pie',
+ textposition = 'inside')
 fig <- fig %>% layout(title = 'Porcentaje de casos positivos por distrito',
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
@@ -480,7 +481,8 @@ otros$canton <- vec1
 otros$provincia<- vec1
 top10masotros=rbind(top10, otros[1,])
 
-fig <- plot_ly(top10masotros, labels = top10masotros$distrito, values = top10masotros$activos, type = 'pie')
+fig <- plot_ly(top10masotros, labels = top10masotros$distrito, values = top10masotros$activos, type = 'pie',
+ textposition = 'inside')
 fig <- fig %>% layout(title = 'Porcentaje de casos activos por distrito',
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
@@ -573,7 +575,8 @@ otros$canton <- vec1
 otros$provincia<- vec1
 top10masotros=rbind(top10, otros[1,])
 
-fig <- plot_ly(top10masotros, labels = top10masotros$distrito, values = top10masotros$recuperados, type = 'pie')
+fig <- plot_ly(top10masotros, labels = top10masotros$distrito, values = top10masotros$recuperados, type = 'pie',
+ textposition = 'inside')
 fig <- fig %>% layout(title = 'Porcentaje de casos recuperados por distrito',
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
@@ -667,7 +670,8 @@ otros$canton <- vec1
 otros$provincia<- vec1
 top10masotros=rbind(top10, otros[1,])
 
-fig <- plot_ly(top10masotros, labels = top10masotros$distrito, values = top10masotros$fallecidos, type = 'pie')
+fig <- plot_ly(top10masotros, labels = top10masotros$distrito, values = top10masotros$fallecidos, type = 'pie',
+ textposition = 'inside')
 fig <- fig %>% layout(title = 'Porcentaje de casos fallecidos por distrito',
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
