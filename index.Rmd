@@ -23,7 +23,7 @@ library(tidyverse)
 
 #-------------------- Colores ---------------------
 
-color_positivos <- 'royalblue'
+color_positivos <- 'darkblue'
 color_activos <- 'red'
 color_recuperados <- 'green'
 color_fallecidos <- 'purple'
